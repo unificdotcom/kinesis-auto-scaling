@@ -25,7 +25,7 @@ jobs:
              curl -o- -L https://slss.io/install | bash
              source ~/.profile
              echo "Path: $PATH"
-             echo "PWD: $PWD:
+             echo "PWD: $PWD"
              ls -la
              serverless deploy --stage dev --verbose --force
        - persist_to_workspace:
