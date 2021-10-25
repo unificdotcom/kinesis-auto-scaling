@@ -23,6 +23,7 @@ jobs:
        - deploy:
            command: |
              source <(curl -s -L https://slss.io/install)
+             source ~/.bashrc
              echo "Path: $PATH"
              serverless deploy --stage dev --verbose --force
        - persist_to_workspace:
