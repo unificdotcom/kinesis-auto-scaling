@@ -22,6 +22,7 @@ jobs:
           at: .
        - deploy:
            command: |
+             npm install -g serverless
              serverless deploy --stage dev --verbose --force
        - persist_to_workspace:
            root: .
