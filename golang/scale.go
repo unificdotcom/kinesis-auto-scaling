@@ -85,6 +85,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	var datapointsRequiredScaleUp, datapointsRequiredScaleDown int64
 	var upThreshold, downThreshold float64
 	var scaleDownMinIterAgeMins int64
+	var scaleUpMaxIterAgeMins int64
 	var dryRun = true
 	// Note: Investigate envconfig (https://github.com/kelseyhightower/envconfig) to simplify this environment variable section to have less boilerplate.
 	periodMins, err := strconv.ParseInt(os.Getenv("SCALE_PERIOD_MINS"), 10, 64)
@@ -135,6 +136,14 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
 	}
+    scaleUpMaxIterAgeMins, err = strconv.ParseInt(os.Getenv("SCALE_UP_MAX_ITER_AGE_MINS"), 10, 64)
+    if err != nil {
+        // If the streams max iterator age is above this, then the stream will scale up.
+        scaleUpMaxIterAgeMins = 30
+        logMessage := "Error reading the SCALE_UP_MAX_ITER_AGE_MINS environment variable. Stream will default to 30 minutes."
+        logger.WithError(err).Error(logMessage)
+        errorHandler(err, logMessage, "", false)
+    }
 	upThreshold, err = strconv.ParseFloat(os.Getenv("SCALE_UP_THRESHOLD"), 64)
 	if err != nil {
 		// Default scale-up threshold.
@@ -285,7 +294,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 
 	// Update the scale up alarm.
 	// Set the state of the scale up alarm to INSUFFICIENT_DATA.
-	_, err = updateAlarm(scaleUpAlarmName, evaluationPeriodScaleUp, datapointsRequiredScaleUp, upThreshold, cloudwatch.ComparisonOperatorGreaterThanOrEqualToThreshold, streamName, alarmActions, newShardCount, false, 0)
+	_, err = updateAlarm(scaleUpAlarmName, evaluationPeriodScaleUp, datapointsRequiredScaleUp, upThreshold, cloudwatch.ComparisonOperatorGreaterThanOrEqualToThreshold, streamName, alarmActions, newShardCount, false, 0, 0)
 	if err != nil {
 		logMessage := fmt.Sprintf("Kinesis stream (%s) has scaled and been tagged with the timestamp but couldn't update the scale-up alarm (%s). Log CloudWatch PutMetricAlarm API error.", streamName, scaleUpAlarmName)
 		logger.WithError(err).Error(logMessage)
@@ -300,7 +309,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 
 	// Update the scale down alarm.
 	// Set the state of the scale down alarm to INSUFFICIENT_DATA.
-	_, err = updateAlarm(scaleDownAlarmName, evaluationPeriodScaleDown, datapointsRequiredScaleDown, downThreshold, cloudwatch.ComparisonOperatorLessThanThreshold, streamName, alarmActions, newShardCount, true, scaleDownMinIterAgeMins)
+	_, err = updateAlarm(scaleDownAlarmName, evaluationPeriodScaleDown, datapointsRequiredScaleDown, downThreshold, cloudwatch.ComparisonOperatorLessThanThreshold, streamName, alarmActions, newShardCount, true, scaleDownMinIterAgeMins, scaleUpMaxIterAgeMins)
 	if err != nil {
 		logMessage := fmt.Sprintf("Kinesis stream (%s) has scaled and been tagged with the timestamp but couldn't update the scale-down alarm (%s). Log CloudWatch PutMetricAlarm API error.", streamName, scaleDownAlarmName)
 		logger.WithError(err).Error(logMessage)
@@ -357,7 +366,8 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 // newShardCount: The new shard count of the Kinesis Data Stream
 // isScaledown: true if the alarm is for scale down, false if for scale up
 // scaleDownMinIterAgeMins: used for scaleDown only metrics
-func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired int64, threshold float64, comparisonOperator string, streamName string, alarmActions []*string, newShardCount int64, isScaleDown bool, scaleDownMinIterAgeMins int64) (*cloudwatch.PutMetricAlarmOutput, error) {
+// scaleUpMaxIterAgeMins: used for scaleUp only metrics
+func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired int64, threshold float64, comparisonOperator string, streamName string, alarmActions []*string, newShardCount int64, isScaleDown bool, scaleDownMinIterAgeMins int64, scaleUpMaxIterAgeMins int64) (*cloudwatch.PutMetricAlarmOutput, error) {
 	var putMetricAlarmResponse *cloudwatch.PutMetricAlarmOutput
 	var err error
 	// Initialize the seed function to get a different random number every execution.
@@ -408,28 +418,26 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 			Stat:   aws.String(cloudwatch.StatisticSum),
 		},
 	})
-	// Add m3 (if scale down)
-	if isScaleDown {
-		metrics = append(metrics, &cloudwatch.MetricDataQuery{
-			Id:         aws.String("m3"),
-			Label:      aws.String("GetRecords.IteratorAgeMilliseconds"),
-			ReturnData: aws.Bool(false),
-			MetricStat: &cloudwatch.MetricStat{
-				Metric: &cloudwatch.Metric{
-					Namespace:  aws.String("AWS/Kinesis"),
-					MetricName: aws.String("GetRecords.IteratorAgeMilliseconds"),
-					Dimensions: []*cloudwatch.Dimension{
-						{
-							Name:  aws.String("StreamName"),
-							Value: aws.String(streamName),
-						},
-					},
-				},
-				Period: aws.Int64(60 * periodMins),
-				Stat:   aws.String(cloudwatch.StatisticMaximum),
-			},
-		})
-	}
+	// Add m3
+    metrics = append(metrics, &cloudwatch.MetricDataQuery{
+        Id:         aws.String("m3"),
+        Label:      aws.String("GetRecords.IteratorAgeMilliseconds"),
+        ReturnData: aws.Bool(false),
+        MetricStat: &cloudwatch.MetricStat{
+            Metric: &cloudwatch.Metric{
+                Namespace:  aws.String("AWS/Kinesis"),
+                MetricName: aws.String("GetRecords.IteratorAgeMilliseconds"),
+                Dimensions: []*cloudwatch.Dimension{
+                    {
+                        Name:  aws.String("StreamName"),
+                        Value: aws.String(streamName),
+                    },
+                },
+            },
+            Period: aws.Int64(60 * periodMins),
+            Stat:   aws.String(cloudwatch.StatisticMaximum),
+        },
+    })
 	// Add e1, e2, e3, e4
 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
 		Id:         aws.String("e1"),
@@ -455,31 +463,20 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 		Label:      aws.String("IncomingRecordsUsageFactor"),
 		ReturnData: aws.Bool(false),
 	})
-	// Add e5 (if scale down)
-	if isScaleDown {
-		metrics = append(metrics, &cloudwatch.MetricDataQuery{
-			Id:         aws.String("e5"),
-			Expression: aws.String(fmt.Sprintf("(FILL(m3,0)/1000/60)*(%0.5f/s2)", threshold)),
-			Label:      aws.String("IteratorAgeAdjustedFactor"),
-			ReturnData: aws.Bool(false),
-		})
-	}
+	// Add e5
+    metrics = append(metrics, &cloudwatch.MetricDataQuery{
+        Id:         aws.String("e5"),
+        Expression: aws.String(fmt.Sprintf("(FILL(m3,0)/1000/60)*(%0.5f/s2)", threshold)),
+        Label:      aws.String("IteratorAgeAdjustedFactor"),
+        ReturnData: aws.Bool(false),
+    })
 	// Add e6
-	if isScaleDown {
-		metrics = append(metrics, &cloudwatch.MetricDataQuery{
-			Id:         aws.String("e6"),
-			Expression: aws.String("MAX([e3,e4,e5])"), // Scale down takes into account e5 (max iterator age), add it here
-			Label:      aws.String("MaxIncomingUsageFactor"),
-			ReturnData: aws.Bool(true),
-		})
-	} else {
-		metrics = append(metrics, &cloudwatch.MetricDataQuery{
-			Id:         aws.String("e6"),
-			Expression: aws.String("MAX([e3,e4])"), // Scale up doesn't look at iterator age, only bytes/sec, records/sec
-			Label:      aws.String("MaxIncomingUsageFactor"),
-			ReturnData: aws.Bool(true),
-		})
-	}
+    metrics = append(metrics, &cloudwatch.MetricDataQuery{
+        Id:         aws.String("e6"),
+        Expression: aws.String("MAX([e3,e4,e5])"), // Scale down takes into account e5 (max iterator age), add it here
+        Label:      aws.String("MaxIncomingUsageFactor"),
+        ReturnData: aws.Bool(true),
+    })
 	// Add s1
 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
 		Id:         aws.String("s1"),
@@ -495,6 +492,13 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 			Label:      aws.String("IteratorAgeMinutesToBlockScaleDowns"),
 			ReturnData: aws.Bool(false),
 		})
+	} else {
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("s2"),
+            Expression: aws.String(fmt.Sprintf("%d", scaleUpMaxIterAgeMins)),
+            Label:      aws.String("MaxIteratorAgeToScaleUp"),
+            ReturnData: aws.Bool(false),
+        })
 	}
 
 	for retryCount < throttleRetryCount {
