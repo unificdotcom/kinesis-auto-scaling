@@ -19,6 +19,7 @@ jobs:
           root: .
           paths:
             - serverless.yml
+            - deploy.sh
             - kinesis_scaling.zip
   dev-deploy:
      <<: *defaults
@@ -26,40 +27,28 @@ jobs:
        - attach_workspace:
           at: .
        - deploy:
-           command: |
-             curl -o- -L https://slss.io/install | bash
-             source ~/.profile
-             serverless deploy --stage dev --verbose --force
+           command: deploy.sh dev
   qa-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-           command: |
-             curl -o- -L https://slss.io/install | bash
-             source ~/.profile
-             serverless deploy --stage qa --verbose --force
+          command: deploy.sh qa
   staging-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-           command: |
-             curl -o- -L https://slss.io/install | bash
-             source ~/.profile
-             serverless deploy --stage staging --verbose --force
+           command: deploy.sh staging
   prod-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-           command: |
-             curl -o- -L https://slss.io/install | bash
-             source ~/.profile
-             serverless deploy --stage prod --verbose --force
+           command: deploy.sh prod
 
 workflows:
   version: 2
