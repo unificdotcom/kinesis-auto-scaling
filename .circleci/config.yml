@@ -33,7 +33,9 @@ jobs:
        - persist_to_workspace:
            root: .
            paths:
+             - .profile
              - .serverless
+             - .serverless/bin
   qa-deploy:
      <<: *defaults
      steps:
