@@ -14,7 +14,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: cd golang && ./build && cp kinesis_scaling.zip ../
+      - run: cd golang && ./build
   dev-deploy:
      <<: *defaults
      steps:
@@ -23,7 +23,7 @@ jobs:
        - deploy:
            command: |
              source <(curl -s -L https://slss.io/install)
-             source ~/.bashrc
+             source ~/.profile
              echo "Path: $PATH"
              serverless deploy --stage dev --verbose --force
        - persist_to_workspace:

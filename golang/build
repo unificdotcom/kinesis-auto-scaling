@@ -6,4 +6,5 @@ go get -d
 go build -o main scale.go
 rm -f kinesis_scaling.zip
 zip kinesis_scaling.zip main
+cp kinesis_scaling.zip ../
 rm main
