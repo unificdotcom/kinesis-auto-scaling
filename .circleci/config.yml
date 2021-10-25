@@ -15,7 +15,6 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: cd golang && ./build
-      - run: curl -o- -L https://slss.io/install | bash
   dev-deploy:
      <<: *defaults
      steps:
@@ -23,6 +22,7 @@ jobs:
           at: .
        - deploy:
            command: |
+             curl -o- -L https://slss.io/install | bash
              serverless deploy --stage dev --verbose --force
        - persist_to_workspace:
            root: .
