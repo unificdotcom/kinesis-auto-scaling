@@ -19,6 +19,7 @@ jobs:
           root: .
           paths:
             - serverless.yml
+            - kinesis_scaling.zip
   dev-deploy:
      <<: *defaults
      steps:
