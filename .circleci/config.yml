@@ -12,7 +12,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: cd golang && go get -d && ./build
+      - run: cd golang && ./build
   dev-deploy:
      <<: *defaults
      steps:
