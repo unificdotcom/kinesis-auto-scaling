@@ -3,7 +3,7 @@ defaults: &defaults
     - MAVEN_OPTS: "-Xms2048m -Xmx4096m"
   working_directory: ~/kinesis-auto-scaling
   docker:
-    - image: underwaterpony/corretto:latest
+    - image: cimg/go:1.17.2
 
 version: 2
 jobs:
