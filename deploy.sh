@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-source <(curl -s -L https://slss.io/install)
-echo "Path: $PATH"
+curl -o- -L https://slss.io/install | bash
+source ~/.profile
 serverless deploy --stage $1 --verbose --force
