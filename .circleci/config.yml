@@ -17,6 +17,8 @@ jobs:
       - run: cd golang && ./build
       - persist_to_workspace:
           root: .
+          paths:
+            - serverless.yml
   dev-deploy:
      <<: *defaults
      steps:
