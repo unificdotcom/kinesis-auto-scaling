@@ -30,12 +30,6 @@ jobs:
              curl -o- -L https://slss.io/install | bash
              source ~/.profile
              serverless deploy --stage dev --verbose --force
-       - persist_to_workspace:
-           root: .
-           paths:
-             - .profile
-             - .serverless
-             - .serverless/bin
   qa-deploy:
      <<: *defaults
      steps:
@@ -43,8 +37,8 @@ jobs:
           at: .
        - deploy:
            command: |
-             ls -la
-             echo "PATH: $PATH"
+             curl -o- -L https://slss.io/install | bash
+             source ~/.profile
              serverless deploy --stage qa --verbose --force
   staging-deploy:
      <<: *defaults
@@ -53,6 +47,8 @@ jobs:
           at: .
        - deploy:
            command: |
+             curl -o- -L https://slss.io/install | bash
+             source ~/.profile
              serverless deploy --stage staging --verbose --force
   prod-deploy:
      <<: *defaults
@@ -61,6 +57,8 @@ jobs:
           at: .
        - deploy:
            command: |
+             curl -o- -L https://slss.io/install | bash
+             source ~/.profile
              serverless deploy --stage prod --verbose --force
 
 workflows:
