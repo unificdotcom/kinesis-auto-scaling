@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
 
-curl -o- -L https://slss.io/install | bash
-source ~/.profile
+source <(curl -s https://slss.io/install)
 serverless deploy --stage $1 --verbose --force

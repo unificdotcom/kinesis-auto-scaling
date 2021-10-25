@@ -27,28 +27,28 @@ jobs:
        - attach_workspace:
           at: .
        - deploy:
-           command: deploy.sh dev
+           command: ./deploy.sh dev
   qa-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-          command: deploy.sh qa
+          command: ./deploy.sh qa
   staging-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-           command: deploy.sh staging
+           command: ./deploy.sh staging
   prod-deploy:
      <<: *defaults
      steps:
        - attach_workspace:
           at: .
        - deploy:
-           command: deploy.sh prod
+           command: ./deploy.sh prod
 
 workflows:
   version: 2
