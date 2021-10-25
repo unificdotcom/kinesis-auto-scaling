@@ -4,6 +4,8 @@ defaults: &defaults
   working_directory: ~/kinesis-auto-scaling
   docker:
     - image: cimg/go:1.17.2
+      environment:
+        GO111MODULE: "off"
 
 version: 2
 jobs:
