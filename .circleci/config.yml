@@ -1,0 +1,155 @@
+defaults: &defaults
+  environment:
+    - MAVEN_OPTS: "-Xms2048m -Xmx4096m"
+  working_directory: ~/kinesis-auto-scaling
+  docker:
+    - image: underwaterpony/corretto:latest
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+#      - restore_cache:
+#          key: m2
+      - setup_remote_docker
+      - run: golang/build
+#      - save_cache:
+#          key: m2
+#          paths:
+#            - "~/.m2"
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - serverless.yml
+#            - env.yml
+#            - vpc.yml
+#            - package.json
+#            - package-lock.json
+#            - target/classes/version.yml
+#            - target/*.sha256
+#            - src/main/resources/templates
+#            - target/pacts
+#      - store_artifacts:
+#          path: target/site
+#          destination: site
+#      - store_artifacts:
+#          path: target/spotbugs
+#          destination: spotbugs
+#      - store_artifacts:
+#          path: target/pacts
+#          destination: pacts
+      #git config user.email circleci@circleci
+      #git config user.name CircleCI
+#  site:
+#    <<: *defaults
+#    steps:
+#      - checkout
+#      - attach_workspace:
+#          at: .
+#      - restore_cache:
+#          key: m2
+#      - run: mvn site -s settings.xml --batch-mode -Dowasp.dependency.check.skip=true
+#      - save_cache:
+#          key: m2
+#          paths:
+#            - "~/.m2"
+#      - store_artifacts:
+#          path: target/site
+#          destination: site
+#      - store_artifacts:
+#          path: target/pacts
+#          destination: pacts
+  dev-deploy:
+     <<: *defaults
+     steps:
+       - attach_workspace:
+          at: .
+       - deploy:
+           command: |
+#             aws s3 sync src/main/resources/templates s3://dev-unific-campaign-templates/ --include "*"
+#             npm install
+             serverless deploy --stage dev --verbose --force
+       - persist_to_workspace:
+           root: .
+           paths:
+             - node_modules
+#       - store_artifacts:
+#           path: target/pacts
+#           destination: pacts
+  qa-deploy:
+     <<: *defaults
+     steps:
+       - attach_workspace:
+          at: .
+       - deploy:
+           command: |
+#             aws s3 sync src/main/resources/templates s3://qa-unific-campaign-templates/ --include "*"
+             serverless deploy --stage qa --verbose --force
+#       - store_artifacts:
+#           path: target/pacts
+#           destination: pacts
+  staging-deploy:
+     <<: *defaults
+     steps:
+       - attach_workspace:
+          at: .
+       - deploy:
+           command: |
+#             aws s3 sync src/main/resources/templates s3://staging-unific-campaign-templates/ --include "*"
+             serverless deploy --stage staging --verbose --force
+#       - store_artifacts:
+#           path: target/pacts
+#           destination: pacts
+  prod-deploy:
+     <<: *defaults
+     steps:
+       - attach_workspace:
+          at: .
+       - deploy:
+           command: |
+#             aws s3 sync src/main/resources/templates s3://unific-campaign-templates/ --include "*"
+             serverless deploy --stage prod --verbose --force
+#       - store_artifacts:
+#           path: target/pacts
+#           destination: pacts
+
+workflows:
+  version: 2
+  my-workflow:
+    jobs:
+      - build:
+          context: unific-test
+      - dev-deploy:
+          context: unific-test
+          requires:
+            - build
+      - qa-approve:
+          type: approval
+          requires:
+            - dev-deploy
+      - qa-deploy:
+          context: unific-test
+          requires:
+            - qa-approve
+      - staging-approve:
+          type: approval
+          requires:
+            - qa-deploy
+      - staging-deploy:
+          context: unific-test
+          requires:
+            - staging-approve
+      - prod-approve:
+          type: approval
+          requires:
+            - staging-deploy
+      - prod-deploy:
+          context: unific-prod
+          requires:
+            - prod-approve
+#      - site:
+#          context: unific-test
+#          requires:
+#            - prod-deploy

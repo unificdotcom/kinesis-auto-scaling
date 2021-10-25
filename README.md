@@ -41,4 +41,4 @@ To generate traffic on your streams you can use [Kinesis Data Generator](https:/
 
 # Modifying / Recompiling the Lambda
 
-Simply edit the `scale.go` file as needed and run `./build` to genrate a `kinesis_scaling.zip` suitable for Lambda deployment. Go 1.15.x is recommened.
+Simply edit the `scale.go` file as needed and run `./build` to generate a `kinesis_scaling.zip` suitable for Lambda deployment. Go 1.15.x is recommended.
