@@ -43,6 +43,8 @@ jobs:
           at: .
        - deploy:
            command: |
+             ls -la
+             echo "PATH: $PATH"
              serverless deploy --stage qa --verbose --force
   staging-deploy:
      <<: *defaults
