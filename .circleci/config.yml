@@ -19,6 +19,7 @@ jobs:
           root: .
           paths:
             - serverless.yml
+            - env.yml
             - deploy.sh
             - kinesis_scaling.zip
   dev-deploy:
