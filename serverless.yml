@@ -200,7 +200,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m2
             ReturnData: False
             Label: IncomingRecords
@@ -212,7 +212,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m3
             ReturnData: False
             Label: GetRecords.IteratorAgeMilliseconds
@@ -224,7 +224,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
@@ -281,7 +281,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m2
             ReturnData: False
             Label: IncomingRecords
@@ -293,7 +293,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m3
             ReturnData: False
             Label: GetRecords.IteratorAgeMilliseconds
@@ -305,7 +305,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
