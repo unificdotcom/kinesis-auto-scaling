@@ -15,7 +15,7 @@ custom:
     qa: true
     staging: true
     prod: false
-  DRY_RUN: ${self:custom.DRY_RUN_ENABLED.${opt:stage, self:provider.stage}}
+  DRY_RUN: ${self:custom.DRY_RUN_ENABLED.${self:custom.stage}}
   SCALE_UP_THRESHOLD: 0.75
   SCALE_UP_MAX_ITER_AGE_MINS: 30
   SCALE_UP_EVALUATION_PERIOD: 5
@@ -200,7 +200,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${self:custom.stage}-discount-code-requests
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: m2
             ReturnData: False
             Label: IncomingRecords
@@ -212,7 +212,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${self:custom.stage}-discount-code-requests
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: m3
             ReturnData: False
             Label: GetRecords.IteratorAgeMilliseconds
@@ -224,7 +224,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${self:custom.stage}-discount-code-requests
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
@@ -281,7 +281,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: "${self:custom.stage}-discount-code-requests"
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: m2
             ReturnData: False
             Label: IncomingRecords
@@ -293,7 +293,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${self:custom.stage}-discount-code-requests
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: m3
             ReturnData: False
             Label: GetRecords.IteratorAgeMilliseconds
@@ -305,7 +305,7 @@ resources:
                 Namespace: AWS/Kinesis
                 Dimensions:
                   - Name: StreamName
-                    Value: ${self:custom.stage}-discount-code-requests
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name:${self:custom.stage}-discount-code-requests}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
