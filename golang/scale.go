@@ -294,7 +294,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 
 	// Update the scale up alarm.
 	// Set the state of the scale up alarm to INSUFFICIENT_DATA.
-	_, err = updateAlarm(scaleUpAlarmName, evaluationPeriodScaleUp, datapointsRequiredScaleUp, upThreshold, cloudwatch.ComparisonOperatorGreaterThanOrEqualToThreshold, streamName, alarmActions, newShardCount, false, 0, 0)
+	_, err = updateAlarm(scaleUpAlarmName, evaluationPeriodScaleUp, datapointsRequiredScaleUp, upThreshold, cloudwatch.ComparisonOperatorGreaterThanOrEqualToThreshold, streamName, alarmActions, newShardCount, false, scaleDownMinIterAgeMins, scaleUpMaxIterAgeMins)
 	if err != nil {
 		logMessage := fmt.Sprintf("Kinesis stream (%s) has scaled and been tagged with the timestamp but couldn't update the scale-up alarm (%s). Log CloudWatch PutMetricAlarm API error.", streamName, scaleUpAlarmName)
 		logger.WithError(err).Error(logMessage)
