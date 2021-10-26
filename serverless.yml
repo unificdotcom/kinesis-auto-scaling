@@ -135,7 +135,7 @@ resources:
                     - 'kinesis:ListTagsForStream'
                     - 'kinesis:UpdateShardCount'
                   Resource:
-                    - !Sub 'arn:aws:kinesis:${self:provider.region}:${AWS::AccountId}:stream/${self:custom.stage}-*'
+                    - '*'
           - PolicyName: AllowPublishToSNS
             PolicyDocument:
               Version: "2012-10-17"
@@ -225,6 +225,20 @@ resources:
                 Dimensions:
                   - Name: StreamName
                     Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+          - Id: m4
+              ReturnData: False
+              Label: SubscribeToShardEvent.MillisBehindLatest
+              MetricStat:
+                Stat: Maximum
+                Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+                Metric:
+                  MetricName: SubscribeToShardEvent.MillisBehindLatest
+                  Namespace: AWS/Kinesis
+                  Dimensions:
+                    - Name: StreamName
+                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+                    - Name: ConsumerName
+                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
@@ -246,9 +260,13 @@ resources:
             Label: IteratorAgeAdjustedFactor
             Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
+            ReturnData: False
+            Label: CouponServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+          - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
-            Expression: MAX([e3,e4,e5]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
+            Expression: MAX([e3,e4,e5,e6]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
 
     AutoScalingDiscountCodeRequestsScaleDownAlarm:
       Type: AWS::CloudWatch::Alarm
@@ -306,6 +324,20 @@ resources:
                 Dimensions:
                   - Name: StreamName
                     Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+          - Id: m4
+              ReturnData: False
+              Label: SubscribeToShardEvent.MillisBehindLatest
+              MetricStat:
+                Stat: Maximum
+                Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+                Metric:
+                  MetricName: SubscribeToShardEvent.MillisBehindLatest
+                  Namespace: AWS/Kinesis
+                  Dimensions:
+                    - Name: StreamName
+                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+                    - Name: ConsumerName
+                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
@@ -327,6 +359,10 @@ resources:
             Label: IteratorAgeAdjustedFactor
             Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
+            ReturnData: False
+            Label: CouponServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+          - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
-            Expression: MAX([e3,e4,e5]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
+            Expression: MAX([e3,e4,e5,e6]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age

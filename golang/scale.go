@@ -155,7 +155,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	downThreshold, err = strconv.ParseFloat(os.Getenv("SCALE_DOWN_THRESHOLD"), 64)
 	if err != nil {
 		// Default scale-down threshold.
-		downThreshold = 0.075
+		downThreshold = 0.75
 		logMessage := "Error reading the SCALE_DOWN_THRESHOLD environment variable. Stream will scale and update the scale-down alarm with default scale-down threshold of 0.075"
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
