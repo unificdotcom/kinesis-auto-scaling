@@ -5,7 +5,7 @@ variablesResolutionMode: 20210326
 provider:
   name: aws
   region: us-west-2
-  deploymentBucket: unific-serverless
+  deploymentBucket: ${file(env.yml):${self:custom.stage}.deployment-bucket}
   lambdaHashingVersion: "20201221"
 
 custom:
@@ -173,7 +173,7 @@ resources:
       Type: AWS::CloudWatch::Alarm
       DependsOn: AutoScalingSNSTopic
       Properties:
-        AlarmName: !Join [ '', [ "${self:custom.stage}-discount-code-requests", '-scale-up' ] ]
+        AlarmName: "${self:custom.stage}-discount-code-requests-scale-up"
         AlarmDescription: 'Stream throughput has gone above the scale up threshold'
         ComparisonOperator: GreaterThanOrEqualToThreshold
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
@@ -254,7 +254,7 @@ resources:
       Type: AWS::CloudWatch::Alarm
       DependsOn: AutoScalingSNSTopic
       Properties:
-        AlarmName: !Join [ '', [ "${self:custom.stage}-discount-code-requests", '-scale-down' ] ]
+        AlarmName: "${self:custom.stage}-discount-code-requests-scale-down"
         AlarmDescription: 'Stream throughput has gone below the scale down threshold'
         ComparisonOperator: LessThanThreshold
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
