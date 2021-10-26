@@ -361,7 +361,7 @@ resources:
           - Id: e6
             ReturnData: False
             Label: CouponServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
