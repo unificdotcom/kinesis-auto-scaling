@@ -226,19 +226,19 @@ resources:
                   - Name: StreamName
                     Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m4
-              ReturnData: False
-              Label: SubscribeToShardEvent.MillisBehindLatest
-              MetricStat:
-                Stat: Maximum
-                Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
-                Metric:
-                  MetricName: SubscribeToShardEvent.MillisBehindLatest
-                  Namespace: AWS/Kinesis
-                  Dimensions:
-                    - Name: StreamName
-                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
-                    - Name: ConsumerName
-                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
@@ -325,19 +325,19 @@ resources:
                   - Name: StreamName
                     Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
           - Id: m4
-              ReturnData: False
-              Label: SubscribeToShardEvent.MillisBehindLatest
-              MetricStat:
-                Stat: Maximum
-                Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
-                Metric:
-                  MetricName: SubscribeToShardEvent.MillisBehindLatest
-                  Namespace: AWS/Kinesis
-                  Dimensions:
-                    - Name: StreamName
-                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
-                    - Name: ConsumerName
-                      Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.discount-code-requests-coupon-service}
           - Id: e1
             ReturnData: False
             Label: FillMissingDataPointsWithZeroForIncomingBytes
