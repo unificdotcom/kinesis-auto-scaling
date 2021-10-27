@@ -11,19 +11,19 @@ provider:
 custom:
   stage: "${opt:stage, self:provider.stage}"
   DRY_RUN_ENABLED:
-    dev: true
+    dev: false
     qa: true
     staging: true
     prod: false
   DRY_RUN: ${self:custom.DRY_RUN_ENABLED.${self:custom.stage}}
-  SCALE_UP_THRESHOLD: 0.75
+  SCALE_UP_THRESHOLD: 0.10
   SCALE_UP_MAX_ITER_AGE_MINS: 30
   SCALE_UP_EVALUATION_PERIOD: 5
-  SCALE_UP_DATAPOINTS_REQUIRED: 5
-  SCALE_DOWN_THRESHOLD: 0.25
+  SCALE_UP_DATAPOINTS_REQUIRED: 1
+  SCALE_DOWN_THRESHOLD: 0.05
   SCALE_DOWN_MIN_ITER_AGE_MINS: 1
-  SCALE_DOWN_EVALUATION_PERIOD: 60
-  SCALE_DOWN_DATAPOINTS_REQUIRED: 57
+  SCALE_DOWN_EVALUATION_PERIOD: 10
+  SCALE_DOWN_DATAPOINTS_REQUIRED: 2
 
 package:
   artifact: kinesis_scaling.zip
