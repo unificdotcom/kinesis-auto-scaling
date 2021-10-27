@@ -507,12 +507,12 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
             })
         }
     } else {
-//         for i, vars := range metrics {
-//             if vars.Id == "s1" {
-//                 metrics.remove(i)
-//                 fmt.Println("Removed: " + i)
-//             }
-//         }
+        for i, vars := range metrics {
+            if *vars.Id == "s1" || *vars.Id == "e7" {
+                removeIndex(metrics, i)
+                logger.Info(fmt.Sprintf("Removed id: %s at index: %d", *vars.Id, i))
+            }
+        }
     	metrics = append(metrics, &cloudwatch.MetricDataQuery{
     		Id:         aws.String("s1"),
     		Expression: aws.String(fmt.Sprintf("%d", newShardCount)),
@@ -520,6 +520,8 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
     		ReturnData: aws.Bool(false),
     	})
     }
+
+    logger.Info(fmt.Sprintf("Metrics: %s", metrics))
 
 	for retryCount < throttleRetryCount {
 		putMetricAlarmResponse, err = svcCloudWatch.PutMetricAlarm(&cloudwatch.PutMetricAlarmInput{
@@ -554,6 +556,10 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 		}
 	}
 	return putMetricAlarmResponse, err
+}
+
+func removeIndex(s []*cloudwatch.MetricDataQuery, index int) []*cloudwatch.MetricDataQuery {
+    return append(s[:index], s[index+1:]...)
 }
 
 // SetAlarmState updates the state of the alarm.

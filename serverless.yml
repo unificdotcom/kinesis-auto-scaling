@@ -11,9 +11,9 @@ provider:
 custom:
   stage: "${opt:stage, self:provider.stage}"
   DRY_RUN_ENABLED:
-    dev: true
-    qa: true
-    staging: true
+    dev: false
+    qa: false
+    staging: false
     prod: false
   DRY_RUN: ${self:custom.DRY_RUN_ENABLED.${self:custom.stage}}
   SCALE_UP_THRESHOLD: 0.10
