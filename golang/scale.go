@@ -379,7 +379,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 	var metrics []*cloudwatch.MetricDataQuery
 
 	logger.Info("Getting alarm metrics for: " + alarmName)
-// 	metrics, err = getAlarmMetrics(alarmName)
+	metrics, err = getAlarmMetrics(alarmName)
 // 	logger.Info(fmt.Sprintf("Metrics: %s", metrics))
 
 	// Add m1
@@ -795,23 +795,23 @@ func getAlarmArn(scaleUpAlarmName string, scaleDownAlarmName string) (string, st
 	return scaleUpAlarmArn, scaleDownAlarmArn, err
 }
 
-// func getAlarmMetrics(alarmName string) ([]*cloudwatch.MetricDataQuery, error) {
-// 	var alarmMetrics []*cloudwatch.MetricDataQuery
-//
-// 	// Get the arn for the alarms
-// 	describeAlarmsResponse, err := svcCloudWatch.DescribeAlarms(&cloudwatch.DescribeAlarmsInput{
-// 		AlarmNames: []*string{&alarmName},
-// 	})
-// 	if err != nil {
-// 		return alarmMetrics, err
-// 	}
-// 	for _, alarm := range describeAlarmsResponse.MetricAlarms {
-// 		if *alarm.AlarmName == alarmName {
-// 			alarmMetrics = alarm.Metrics
-// 		}
-// 	}
-// 	return alarmMetrics, err
-// }
+func getAlarmMetrics(alarmName string) ([]*cloudwatch.MetricDataQuery, error) {
+	var alarmMetrics []*cloudwatch.MetricDataQuery
+
+	// Get the arn for the alarms
+	describeAlarmsResponse, err := svcCloudWatch.DescribeAlarms(&cloudwatch.DescribeAlarmsInput{
+		AlarmNames: []*string{&alarmName},
+	})
+	if err != nil {
+		return alarmMetrics, err
+	}
+	for _, alarm := range describeAlarmsResponse.MetricAlarms {
+		if *alarm.AlarmName == alarmName {
+			alarmMetrics = alarm.Metrics
+		}
+	}
+	return alarmMetrics, err
+}
 
 // GetAwsErrFromError retrieves error code and error message from the error object returned by the AWS APIs.
 // It returns the error code and error message.
