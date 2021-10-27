@@ -380,6 +380,11 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 
 	logger.Info("Getting alarm metrics for: " + alarmName)
 	metrics, err = getAlarmMetrics(alarmName)
+
+	if (err != nil) {
+	    logger.WithError(err).Error("Error getting alarm metrics for alarm: " + alarmName)
+	}
+
 // 	logger.Info(fmt.Sprintf("Metrics: %s", metrics))
 
 // 	// Add m1
