@@ -372,7 +372,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 	var err error
 	// Initialize the seed function to get a different random number every execution.
 	rand.Seed(time.Now().UnixNano())
-// 	var periodMins int64 = 5 // Data is evaluated every 5 minutes
+	var periodMins int64 = 5 // Data is evaluated every 5 minutes
 	var retryCount int64 = 0
 	var isDone bool
 
@@ -383,138 +383,143 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 
 	if (err != nil) {
 	    logger.WithError(err).Error("Error getting alarm metrics for: " + alarmName)
-	}
 
-// 	logger.Info(fmt.Sprintf("Metrics: %s", metrics))
-
-// 	// Add m1
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("m1"),
-// 		Label:      aws.String(kinesis.MetricsNameIncomingBytes),
-// 		ReturnData: aws.Bool(false),
-// 		MetricStat: &cloudwatch.MetricStat{
-// 			Metric: &cloudwatch.Metric{
-// 				Namespace:  aws.String("AWS/Kinesis"),
-// 				MetricName: aws.String(kinesis.MetricsNameIncomingBytes),
-// 				Dimensions: []*cloudwatch.Dimension{
-// 					{
-// 						Name:  aws.String("StreamName"),
-// 						Value: aws.String(streamName),
-// 					},
-// 				},
-// 			},
-// 			Period: aws.Int64(60 * periodMins),
-// 			Stat:   aws.String(cloudwatch.StatisticSum),
-// 		},
-// 	})
-// 	// Add m2
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("m2"),
-// 		Label:      aws.String(kinesis.MetricsNameIncomingRecords),
-// 		ReturnData: aws.Bool(false),
-// 		MetricStat: &cloudwatch.MetricStat{
-// 			Metric: &cloudwatch.Metric{
-// 				Namespace:  aws.String("AWS/Kinesis"),
-// 				MetricName: aws.String(kinesis.MetricsNameIncomingRecords),
-// 				Dimensions: []*cloudwatch.Dimension{
-// 					{
-// 						Name:  aws.String("StreamName"),
-// 						Value: aws.String(streamName),
-// 					},
-// 				},
-// 			},
-// 			Period: aws.Int64(60 * periodMins),
-// 			Stat:   aws.String(cloudwatch.StatisticSum),
-// 		},
-// 	})
-// 	// Add m3
-//     metrics = append(metrics, &cloudwatch.MetricDataQuery{
-//         Id:         aws.String("m3"),
-//         Label:      aws.String("GetRecords.IteratorAgeMilliseconds"),
-//         ReturnData: aws.Bool(false),
-//         MetricStat: &cloudwatch.MetricStat{
-//             Metric: &cloudwatch.Metric{
-//                 Namespace:  aws.String("AWS/Kinesis"),
-//                 MetricName: aws.String("GetRecords.IteratorAgeMilliseconds"),
-//                 Dimensions: []*cloudwatch.Dimension{
-//                     {
-//                         Name:  aws.String("StreamName"),
-//                         Value: aws.String(streamName),
-//                     },
-//                 },
-//             },
-//             Period: aws.Int64(60 * periodMins),
-//             Stat:   aws.String(cloudwatch.StatisticMaximum),
-//         },
-//     })
-// 	// Add e1, e2, e3, e4
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("e1"),
-// 		Expression: aws.String("FILL(m1,0)"),
-// 		Label:      aws.String("FillMissingDataPointsWithZeroForIncomingBytes"),
-// 		ReturnData: aws.Bool(false),
-// 	})
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("e2"),
-// 		Expression: aws.String("FILL(m2,0)"),
-// 		Label:      aws.String("FillMissingDataPointsWithZeroForIncomingRecords"),
-// 		ReturnData: aws.Bool(false),
-// 	})
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("e3"),
-// 		Expression: aws.String(fmt.Sprintf("e1/(1024*1024*60*%d*s1)", periodMins)),
-// 		Label:      aws.String("IncomingBytesUsageFactor"),
-// 		ReturnData: aws.Bool(false),
-// 	})
-// 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 		Id:         aws.String("e4"),
-// 		Expression: aws.String(fmt.Sprintf("e2/(1000*60*%d*s1)", periodMins)),
-// 		Label:      aws.String("IncomingRecordsUsageFactor"),
-// 		ReturnData: aws.Bool(false),
-// 	})
-// 	// Add e5
-//     metrics = append(metrics, &cloudwatch.MetricDataQuery{
-//         Id:         aws.String("e5"),
-//         Expression: aws.String(fmt.Sprintf("(FILL(m3,0)/1000/60)*(%0.5f/s2)", threshold)),
-//         Label:      aws.String("IteratorAgeAdjustedFactor"),
-//         ReturnData: aws.Bool(false),
-//     })
-// 	// Add e6
-//     metrics = append(metrics, &cloudwatch.MetricDataQuery{
-//         Id:         aws.String("e6"),
-//         Expression: aws.String("MAX([e3,e4,e5])"), // Scale down takes into account e5 (max iterator age), add it here
-//         Label:      aws.String("MaxIncomingUsageFactor"),
-//         ReturnData: aws.Bool(true),
-//     })
-//     for i, vars := range metrics {
-//         if vars.Id == "s1" {
-//             metrics.remove(i)
-//             fmt.Println("Removed: " + i)
+        // Add m1
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("m1"),
+            Label:      aws.String(kinesis.MetricsNameIncomingBytes),
+            ReturnData: aws.Bool(false),
+            MetricStat: &cloudwatch.MetricStat{
+                Metric: &cloudwatch.Metric{
+                    Namespace:  aws.String("AWS/Kinesis"),
+                    MetricName: aws.String(kinesis.MetricsNameIncomingBytes),
+                    Dimensions: []*cloudwatch.Dimension{
+                        {
+                            Name:  aws.String("StreamName"),
+                            Value: aws.String(streamName),
+                        },
+                    },
+                },
+                Period: aws.Int64(60 * periodMins),
+                Stat:   aws.String(cloudwatch.StatisticSum),
+            },
+        })
+        // Add m2
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("m2"),
+            Label:      aws.String(kinesis.MetricsNameIncomingRecords),
+            ReturnData: aws.Bool(false),
+            MetricStat: &cloudwatch.MetricStat{
+                Metric: &cloudwatch.Metric{
+                    Namespace:  aws.String("AWS/Kinesis"),
+                    MetricName: aws.String(kinesis.MetricsNameIncomingRecords),
+                    Dimensions: []*cloudwatch.Dimension{
+                        {
+                            Name:  aws.String("StreamName"),
+                            Value: aws.String(streamName),
+                        },
+                    },
+                },
+                Period: aws.Int64(60 * periodMins),
+                Stat:   aws.String(cloudwatch.StatisticSum),
+            },
+        })
+        // Add m3
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("m3"),
+            Label:      aws.String("GetRecords.IteratorAgeMilliseconds"),
+            ReturnData: aws.Bool(false),
+            MetricStat: &cloudwatch.MetricStat{
+                Metric: &cloudwatch.Metric{
+                    Namespace:  aws.String("AWS/Kinesis"),
+                    MetricName: aws.String("GetRecords.IteratorAgeMilliseconds"),
+                    Dimensions: []*cloudwatch.Dimension{
+                        {
+                            Name:  aws.String("StreamName"),
+                            Value: aws.String(streamName),
+                        },
+                    },
+                },
+                Period: aws.Int64(60 * periodMins),
+                Stat:   aws.String(cloudwatch.StatisticMaximum),
+            },
+        })
+        // Add e1, e2, e3, e4
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e1"),
+            Expression: aws.String("FILL(m1,0)"),
+            Label:      aws.String("FillMissingDataPointsWithZeroForIncomingBytes"),
+            ReturnData: aws.Bool(false),
+        })
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e2"),
+            Expression: aws.String("FILL(m2,0)"),
+            Label:      aws.String("FillMissingDataPointsWithZeroForIncomingRecords"),
+            ReturnData: aws.Bool(false),
+        })
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e3"),
+            Expression: aws.String(fmt.Sprintf("e1/(1024*1024*60*%d*s1)", periodMins)),
+            Label:      aws.String("IncomingBytesUsageFactor"),
+            ReturnData: aws.Bool(false),
+        })
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e4"),
+            Expression: aws.String(fmt.Sprintf("e2/(1000*60*%d*s1)", periodMins)),
+            Label:      aws.String("IncomingRecordsUsageFactor"),
+            ReturnData: aws.Bool(false),
+        })
+        // Add e5
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e5"),
+            Expression: aws.String(fmt.Sprintf("(FILL(m3,0)/1000/60)*(%0.5f/s2)", threshold)),
+            Label:      aws.String("IteratorAgeAdjustedFactor"),
+            ReturnData: aws.Bool(false),
+        })
+        // Add e6
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("e6"),
+            Expression: aws.String("MAX([e3,e4,e5])"), // Scale down takes into account e5 (max iterator age), add it here
+            Label:      aws.String("MaxIncomingUsageFactor"),
+            ReturnData: aws.Bool(true),
+        })
+        // Add s1
+        metrics = append(metrics, &cloudwatch.MetricDataQuery{
+            Id:         aws.String("s1"),
+            Expression: aws.String(fmt.Sprintf("%d", newShardCount)),
+            Label:      aws.String("ShardCount"),
+            ReturnData: aws.Bool(false),
+        })
+        // Add s2
+        if isScaleDown {
+            metrics = append(metrics, &cloudwatch.MetricDataQuery{
+                Id:         aws.String("s2"),
+                Expression: aws.String(fmt.Sprintf("%d", scaleDownMinIterAgeMins)),
+                Label:      aws.String("IteratorAgeMinutesToBlockScaleDowns"),
+                ReturnData: aws.Bool(false),
+            })
+        } else {
+            metrics = append(metrics, &cloudwatch.MetricDataQuery{
+                Id:         aws.String("s2"),
+                Expression: aws.String(fmt.Sprintf("%d", scaleUpMaxIterAgeMins)),
+                Label:      aws.String("MaxIteratorAgeToScaleUp"),
+                ReturnData: aws.Bool(false),
+            })
+        }
+    } else {
+//         for i, vars := range metrics {
+//             if vars.Id == "s1" {
+//                 metrics.remove(i)
+//                 fmt.Println("Removed: " + i)
+//             }
 //         }
-//     }
-	// Add s1
-	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-		Id:         aws.String("s1"),
-		Expression: aws.String(fmt.Sprintf("%d", newShardCount)),
-		Label:      aws.String("ShardCount"),
-		ReturnData: aws.Bool(false),
-	})
-// 	// Add s2
-// 	if isScaleDown {
-// 		metrics = append(metrics, &cloudwatch.MetricDataQuery{
-// 			Id:         aws.String("s2"),
-// 			Expression: aws.String(fmt.Sprintf("%d", scaleDownMinIterAgeMins)),
-// 			Label:      aws.String("IteratorAgeMinutesToBlockScaleDowns"),
-// 			ReturnData: aws.Bool(false),
-// 		})
-// 	} else {
-//         metrics = append(metrics, &cloudwatch.MetricDataQuery{
-//             Id:         aws.String("s2"),
-//             Expression: aws.String(fmt.Sprintf("%d", scaleUpMaxIterAgeMins)),
-//             Label:      aws.String("MaxIteratorAgeToScaleUp"),
-//             ReturnData: aws.Bool(false),
-//         })
-// 	}
+    	metrics = append(metrics, &cloudwatch.MetricDataQuery{
+    		Id:         aws.String("s1"),
+    		Expression: aws.String(fmt.Sprintf("%d", newShardCount)),
+    		Label:      aws.String("ShardCount"),
+    		ReturnData: aws.Bool(false),
+    	})
+    }
 
 	for retryCount < throttleRetryCount {
 		putMetricAlarmResponse, err = svcCloudWatch.PutMetricAlarm(&cloudwatch.PutMetricAlarmInput{
