@@ -380,7 +380,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 
 	logger.Info("Getting alarm metrics for: " + alarmName)
 	metrics, err = getAlarmMetrics(alarmName)
-	logger.Info("Metrics: " + metrics)
+	logger.Info(fmt.Sprintf("Metrics: %s", metrics))
 
 	// Add m1
 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
@@ -481,13 +481,12 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
         Label:      aws.String("MaxIncomingUsageFactor"),
         ReturnData: aws.Bool(true),
     })
-    for i, vars := range metrics {
-        if vars.Id == "s1" {
-            metrics.remove(i)
-            fmt.Println("Removed: " + i)
-        }
-    }
-
+//     for i, vars := range metrics {
+//         if vars.Id == "s1" {
+//             metrics.remove(i)
+//             fmt.Println("Removed: " + i)
+//         }
+//     }
 	// Add s1
 	metrics = append(metrics, &cloudwatch.MetricDataQuery{
 		Id:         aws.String("s1"),
