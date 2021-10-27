@@ -40,6 +40,7 @@ functions:
     memorySize: 512
     timeout: 900
     maximumRetryAttempts: 0
+    reservedConcurrency: 1
     environment:
       THROTTLE_RETRY_MIN_SLEEP: 1
       THROTTLE_RETRY_MAX_SLEEP: 3
