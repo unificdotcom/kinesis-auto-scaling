@@ -510,7 +510,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
         for i, vars := range metrics {
             // Remove ShardCount and MaxIncomingUsageFactor duplicate metrics
             if *vars.Id == "s1" || *vars.Id == "e7" {
-                removeIndex(metrics, i)
+                metrics = removeIndex(metrics, i)
                 logger.Info(fmt.Sprintf("Removed id: %s at index: %d", *vars.Id, i))
             }
         }
