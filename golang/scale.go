@@ -507,20 +507,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
             })
         }
     } else {
-//         for i, vars := range metrics {
-//             // Remove ShardCount metric
-//             if *vars.Id == "s1" {
-//                 metrics = removeIndex(metrics, i)
-//                 logger.Info(fmt.Sprintf("Removed id: %s at index: %d", *vars.Id, i))
-//                 break
-//             }
-//         }
-//     	metrics = append(metrics, &cloudwatch.MetricDataQuery{
-//     		Id:         aws.String("s1"),
-//     		Expression: aws.String(fmt.Sprintf("%d", newShardCount)),
-//     		Label:      aws.String("ShardCount"),
-//     		ReturnData: aws.Bool(false),
-//     	})
+        // Prepend updated ShardCount metric to prevent from being removed as a duplicate
         metrics = append([]*cloudwatch.MetricDataQuery {
                     &cloudwatch.MetricDataQuery{
                     Id:         aws.String("s1"),
@@ -568,18 +555,14 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 	return putMetricAlarmResponse, err
 }
 
-func removeIndex(s []*cloudwatch.MetricDataQuery, index int) []*cloudwatch.MetricDataQuery {
-    return append(s[:index], s[index+1:]...)
-}
-
-func removeDuplicateValues(intSlice []*cloudwatch.MetricDataQuery) []*cloudwatch.MetricDataQuery {
+func removeDuplicateValues(metrics []*cloudwatch.MetricDataQuery) []*cloudwatch.MetricDataQuery {
     keys := make(map[string]bool)
     list := []*cloudwatch.MetricDataQuery{}
 
     // If the key(values of the slice) is not equal
     // to the already present value in new slice (list)
     // then we append it. else we jump on another element.
-    for _, entry := range intSlice {
+    for _, entry := range metrics {
         if _, value := keys[*entry.Id]; !value {
             keys[*entry.Id] = true
             list = append(list, entry)
