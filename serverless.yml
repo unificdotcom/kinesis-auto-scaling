@@ -2176,3 +2176,240 @@ resources:
             ReturnData: True
             Label: MaxIncomingUsageFactor
             Expression: MAX([e3,e4,e5,e6]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
+
+    #
+    # Kinesis inbound-webhooks - Scale Up Alarm
+    #
+    AutoScalingInboundWebhooksScaleUpAlarm:
+      Type: AWS::CloudWatch::Alarm
+      DependsOn: AutoScalingSNSTopic
+      Properties:
+        AlarmName: "${self:custom.stage}-inbound-webhooks-scale-up"
+        AlarmDescription: 'Stream throughput has gone above the scale up threshold'
+        ComparisonOperator: GreaterThanOrEqualToThreshold
+        Threshold: ${self:custom.SCALE_UP_THRESHOLD}
+        EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
+        DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
+        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        Metrics:
+          - Id: s1
+            ReturnData: False
+            Label: ShardCount
+            Expression: 1
+          - Id: s2
+            ReturnData: False
+            Label: MaxIteratorAgeToScaleUp
+            Expression: ${self:custom.SCALE_UP_MAX_ITER_AGE_MINS}
+          - Id: m1
+            ReturnData: False
+            Label: IncomingBytes
+            MetricStat:
+              Stat: Sum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: IncomingBytes
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m2
+            ReturnData: False
+            Label: IncomingRecords
+            MetricStat:
+              Stat: Sum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: IncomingRecords
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m3
+            ReturnData: False
+            Label: GetRecords.IteratorAgeMilliseconds
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: GetRecords.IteratorAgeMilliseconds
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m4
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-transformation-service}
+          - Id: m5
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-data-fetchers-service}
+          - Id: e1
+            ReturnData: False
+            Label: FillMissingDataPointsWithZeroForIncomingBytes
+            Expression: FILL(m1,0)
+          - Id: e2
+            ReturnData: False
+            Label: FillMissingDataPointsWithZeroForIncomingRecords
+            Expression: FILL(m2,0)
+          - Id: e3
+            ReturnData: False
+            Label: IncomingBytesUsageFactor
+            Expression: e1/(1024*1024*60*5*s1) # e1/(1024*1024*60*${kinesis_period_mins}*s1)
+          - Id: e4
+            ReturnData: False
+            Label: IncomingRecordsUsageFactor
+            Expression: e2/(1000*60*5*s1) # e2/(1000*60*${kinesis_period_mins}*s1)
+          - Id: e5
+            ReturnData: False
+            Label: IteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+          - Id: e6
+            ReturnData: False
+            Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+          - Id: e7
+            ReturnData: False
+            Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+          - Id: e8
+            ReturnData: True
+            Label: MaxIncomingUsageFactor
+            Expression: MAX([e3,e4,e5,e6,e7]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
+
+    AutoScalingInboundWebhooksScaleDownAlarm:
+      Type: AWS::CloudWatch::Alarm
+      DependsOn: AutoScalingSNSTopic
+      Properties:
+        AlarmName: "${self:custom.stage}-inbound-webhooks-scale-down"
+        AlarmDescription: 'Stream throughput has gone below the scale down threshold'
+        ComparisonOperator: LessThanThreshold
+        Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
+        EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
+        DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
+        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        Metrics:
+          - Id: s1
+            ReturnData: False
+            Label: ShardCount
+            Expression: 1
+          - Id: s2
+            ReturnData: False
+            Label: IteratorAgeMinutesToBlockScaledowns
+            Expression: ${self:custom.SCALE_DOWN_MIN_ITER_AGE_MINS}
+          - Id: m1
+            ReturnData: False
+            Label: IncomingBytes
+            MetricStat:
+              Stat: Sum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: IncomingBytes
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m2
+            ReturnData: False
+            Label: IncomingRecords
+            MetricStat:
+              Stat: Sum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: IncomingRecords
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m3
+            ReturnData: False
+            Label: GetRecords.IteratorAgeMilliseconds
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: GetRecords.IteratorAgeMilliseconds
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+          - Id: m4
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-transformation-service}
+          - Id: m5
+            ReturnData: False
+            Label: SubscribeToShardEvent.MillisBehindLatest
+            MetricStat:
+              Stat: Maximum
+              Period: 300 # Must match kinesis_period_mins: 5 minutes. Convert to seconds. 300 seconds.
+              Metric:
+                MetricName: SubscribeToShardEvent.MillisBehindLatest
+                Namespace: AWS/Kinesis
+                Dimensions:
+                  - Name: StreamName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-stream-name}
+                  - Name: ConsumerName
+                    Value: ${file(env.yml):${self:custom.stage}.inbound-webhooks-data-fetchers-service}
+          - Id: e1
+            ReturnData: False
+            Label: FillMissingDataPointsWithZeroForIncomingBytes
+            Expression: FILL(m1,0)
+          - Id: e2
+            ReturnData: False
+            Label: FillMissingDataPointsWithZeroForIncomingRecords
+            Expression: FILL(m2,0)
+          - Id: e3
+            ReturnData: False
+            Label: IncomingBytesUsageFactor
+            Expression: e1/(1024*1024*60*5*s1) # e1/(1024*1024*60*${kinesis_period_mins}*s1)
+          - Id: e4
+            ReturnData: False
+            Label: IncomingRecordsUsageFactor
+            Expression: e2/(1000*60*5*s1) # e2/(1000*60*${kinesis_period_mins}*s1)
+          - Id: e5
+            ReturnData: False
+            Label: IteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+          - Id: e6
+            ReturnData: False
+            Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+          - Id: e7
+            ReturnData: False
+            Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
+            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+          - Id: e8
+            ReturnData: True
+            Label: MaxIncomingUsageFactor
+            Expression: MAX([e3,e4,e5,e6,e7]) # Take the highest usage factor between bytes/sec, records/sec, and adjusted iterator age
