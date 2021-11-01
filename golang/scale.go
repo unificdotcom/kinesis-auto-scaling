@@ -244,7 +244,11 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	streamName := getStreamName(alarmInformation)
 	logger = logger.WithField("StreamName", streamName)
 	logger.Info("Received scaling event. Will now scale the stream")
-	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), 0)
+
+	var scalingPeriodMins int64
+	scalingPeriodMins = min(evaluationPeriodScaleUp, evaluationPeriodScaleDown) * periodMins
+	logger.Infof("Scaling period minutes: %d.", scalingPeriodMins)
+	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), scalingPeriodMins)
 	if !scaleStream {
 		//Ignore this attempt and exit.
 		logger.Info("Scale-" + currentAlarmAction + " event rejected")
@@ -350,6 +354,13 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 
 	logger.Info(fmt.Sprintf("Scaling complete for %s", streamName))
 	// Successful exit, shard count has been updated, concurrency for the processing lambda has been set accordingly, alarms have been re-calculated and updated.
+}
+
+func min(x, y int64) int64 {
+ if x < y {
+   return x
+ }
+ return y
 }
 
 // UpdateAlarm updates the cloudwatch alarm with an updated shardCount values (parameter newShardCount).
@@ -758,7 +769,7 @@ func checkLastScaledTimestamp(lastScaledTimestamp string, alarmTime string, scal
 		return scaleStream
 	}
 
-	// Too soon since the last scaling event, do not scale (unused feature right now and set to 0)
+	// Too soon since the last scaling event, do not scale
 	var nextAllowedScalingEvent = lastScaled.Add(time.Minute * time.Duration(scalingPeriodMins))
 	if stateChangeTime.Before(nextAllowedScalingEvent) {
 		scaleStream = false
