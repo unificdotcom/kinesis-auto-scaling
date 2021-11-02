@@ -86,6 +86,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	var upThreshold, downThreshold float64
 	var scaleDownMinIterAgeMins int64
 	var scaleUpMaxIterAgeMins int64
+    var scalingTimeoutMins int64
 	var dryRun = true
 	// Note: Investigate envconfig (https://github.com/kelseyhightower/envconfig) to simplify this environment variable section to have less boilerplate.
 	periodMins, err := strconv.ParseInt(os.Getenv("SCALE_PERIOD_MINS"), 10, 64)
@@ -148,7 +149,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	if err != nil {
 		// Default scale-up threshold.
 		upThreshold = 0.25
-		logMessage := "Error reading the SCALE_UP_THRESHOLD environment variable. Stream will scale and update the scale-up alarm with default scale-up threshold of 0.25"
+		logMessage := "Error reading the SCALE_UP_THRESHOLD environment variable. Stream will scale and update the scale-up alarm with default scale-up threshold of 0.25."
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
 	}
@@ -156,10 +157,18 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	if err != nil {
 		// Default scale-down threshold.
 		downThreshold = 0.75
-		logMessage := "Error reading the SCALE_DOWN_THRESHOLD environment variable. Stream will scale and update the scale-down alarm with default scale-down threshold of 0.075"
+		logMessage := "Error reading the SCALE_DOWN_THRESHOLD environment variable. Stream will scale and update the scale-down alarm with default scale-down threshold of 0.75."
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
 	}
+    scalingTimeoutMins, err = strconv.ParseInt(os.Getenv("SCALING_TIMEOUT"), 10, 64)
+    if err != nil {
+        // Default scaling timeout.
+        scalingTimeoutMins = 30
+        logMessage := "Error reading the SCALING_TIMEOUT environment variable. Default scaling timeout is 30 minutes."
+        logger.WithError(err).Error(logMessage)
+        errorHandler(err, logMessage, "", false)
+    }
 	throttleRetryMin, err = strconv.ParseInt(os.Getenv("THROTTLE_RETRY_MIN_SLEEP"), 10, 64)
 	if err != nil {
 		// Default throttle retry floor value for generating random integer.
@@ -245,10 +254,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	logger = logger.WithField("StreamName", streamName)
 	logger.Info("Received scaling event. Will now scale the stream")
 
-	var scalingPeriodMins int64
-	scalingPeriodMins = min(evaluationPeriodScaleUp, evaluationPeriodScaleDown) * periodMins
-	logger.Infof("Scaling period minutes: %d.", scalingPeriodMins)
-	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), scalingPeriodMins)
+	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), scalingTimeoutMins)
 	if !scaleStream {
 		//Ignore this attempt and exit.
 		logger.Info("Scale-" + currentAlarmAction + " event rejected")

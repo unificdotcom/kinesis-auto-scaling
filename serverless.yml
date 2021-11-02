@@ -18,12 +18,13 @@ custom:
   DRY_RUN: ${self:custom.DRY_RUN_ENABLED.${self:custom.stage}}
   SCALE_UP_THRESHOLD: 0.75
   SCALE_UP_MAX_ITER_AGE_MINS: 30
-  SCALE_UP_EVALUATION_PERIOD: 5
+  SCALE_UP_EVALUATION_PERIOD: 4
   SCALE_UP_DATAPOINTS_REQUIRED: 5
   SCALE_DOWN_THRESHOLD: 0.25
   SCALE_DOWN_MIN_ITER_AGE_MINS: 1
   SCALE_DOWN_EVALUATION_PERIOD: 60
   SCALE_DOWN_DATAPOINTS_REQUIRED: 57
+  SCALING_TIMEOUT: 60
 
 package:
   artifact: kinesis_scaling.zip
@@ -54,6 +55,7 @@ functions:
       SCALE_DOWN_EVALUATION_PERIOD: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
       SCALE_DOWN_DATAPOINTS_REQUIRED: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
       SCALE_DOWN_MIN_ITER_AGE_MINS: ${self:custom.SCALE_DOWN_MIN_ITER_AGE_MINS}
+      SCALING_TIMEOUT: ${self:custom.SCALING_TIMEOUT}
       PROCESSING_LAMBDA_ARN: "" # Empty = No Op, or if scaling a single stream, set this to the lambda consumer arn to automatically reserve concurrency as the stream scales
       PROCESSING_LAMBDAS_PER_SHARD: 5 # Lambdas per shard used by the above processing lambda
       DRY_RUN: ${self:custom.DRY_RUN} # Dry run flag (true or false) indicating whether streams will be scaling or not.
