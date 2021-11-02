@@ -161,11 +161,11 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
 	}
-    scalingTimeoutMins, err = strconv.ParseInt(os.Getenv("SCALING_TIMEOUT"), 10, 64)
+    scalingTimeoutMins, err = strconv.ParseInt(os.Getenv("SCALING_COOLDOWN_PERIOD_MINS"), 10, 64)
     if err != nil {
         // Default scaling timeout.
         scalingTimeoutMins = 30
-        logMessage := "Error reading the SCALING_TIMEOUT environment variable. Default scaling timeout is 30 minutes."
+        logMessage := "Error reading the SCALING_COOLDOWN_PERIOD_MINS environment variable. Default scaling timeout is 30 minutes."
         logger.WithError(err).Error(logMessage)
         errorHandler(err, logMessage, "", false)
     }
