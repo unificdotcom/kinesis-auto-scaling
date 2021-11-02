@@ -262,11 +262,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CouponServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -361,11 +361,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CouponServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -463,11 +463,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -562,11 +562,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -664,11 +664,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -763,11 +763,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -864,11 +864,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -963,11 +963,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1065,11 +1065,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1164,11 +1164,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: ContentEnrichmentServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1266,11 +1266,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1365,11 +1365,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1467,11 +1467,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1566,11 +1566,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1668,11 +1668,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1767,11 +1767,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1869,11 +1869,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -1968,11 +1968,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -2070,11 +2070,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -2169,11 +2169,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: CampaignServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -2285,11 +2285,11 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
@@ -2402,15 +2402,15 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m5,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e8
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -2522,15 +2522,15 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e6
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e7
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m5,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e8
             ReturnData: True
             Label: MaxIncomingUsageFactor
@@ -2639,15 +2639,15 @@ resources:
           - Id: e5
             ReturnData: False
             Label: IteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m3,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m3,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e6
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m4,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m4,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e7
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
+            Expression: !Sub (FILL(m5,LINEAR)/1000/60)*(${self:custom.SCALE_DOWN_THRESHOLD}/s2) # We want to block scaledowns when IterAge is > 30 mins, multiply IterAge so 30 mins = <alarmThreshold>
           - Id: e8
             ReturnData: True
             Label: MaxIncomingUsageFactor
