@@ -86,7 +86,8 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	var upThreshold, downThreshold float64
 	var scaleDownMinIterAgeMins int64
 	var scaleUpMaxIterAgeMins int64
-    var scalingTimeoutMins int64
+    var scalingCooldownPeriodMins int64
+    var maxShards int64
 	var dryRun = true
 	// Note: Investigate envconfig (https://github.com/kelseyhightower/envconfig) to simplify this environment variable section to have less boilerplate.
 	periodMins, err := strconv.ParseInt(os.Getenv("SCALE_PERIOD_MINS"), 10, 64)
@@ -161,11 +162,19 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 		logger.WithError(err).Error(logMessage)
 		errorHandler(err, logMessage, "", false)
 	}
-    scalingTimeoutMins, err = strconv.ParseInt(os.Getenv("SCALING_COOLDOWN_PERIOD_MINS"), 10, 64)
+    scalingCooldownPeriodMins, err = strconv.ParseInt(os.Getenv("SCALING_COOLDOWN_PERIOD_MINS"), 10, 64)
     if err != nil {
-        // Default scaling timeout.
-        scalingTimeoutMins = 30
+        // Default scaling cooldown.
+        scalingCooldownPeriodMins = 30
         logMessage := "Error reading the SCALING_COOLDOWN_PERIOD_MINS environment variable. Default scaling timeout is 30 minutes."
+        logger.WithError(err).Error(logMessage)
+        errorHandler(err, logMessage, "", false)
+    }
+    maxShards, err = strconv.ParseInt(os.Getenv("MAX_SHARDS"), 10, 64)
+    if err != nil {
+        // Default max shards
+        maxShards = 64
+        logMessage := "Error reading the MAX_SHARDS environment variable. Default max shards is 64."
         logger.WithError(err).Error(logMessage)
         errorHandler(err, logMessage, "", false)
     }
@@ -254,7 +263,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	logger = logger.WithField("StreamName", streamName)
 	logger.Info("Received scaling event. Will now scale the stream")
 
-	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), scalingTimeoutMins)
+	scaleStream := checkLastScaledTimestamp(lastScaledTimestamp, alarmInformation["StateChangeTime"].(string), scalingCooldownPeriodMins)
 	if !scaleStream {
 		//Ignore this attempt and exit.
 		logger.Info("Scale-" + currentAlarmAction + " event rejected")
@@ -282,6 +291,10 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	currentShardCount = *((*streamSummary.StreamDescriptionSummary).OpenShardCount)
 	newShardCount, downThreshold = calculateNewShardCount(currentAlarmAction, downThreshold, currentShardCount)
 	logger = logger.WithField("CurrentShardCount", currentShardCount).WithField("TargetShardCount", newShardCount)
+    if (newShardCount > maxShards) {
+        logger.Infof("Target shard count: %d is greater than max shards: %d. Will not scale the stream.", newShardCount, maxShards)
+        return
+    }
 	if dryRun {
 		logger.Info("This is dry run. Will not scale the stream.")
 		return
