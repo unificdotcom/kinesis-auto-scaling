@@ -165,7 +165,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
     scalingCooldownPeriodMins, err = strconv.ParseInt(os.Getenv("SCALING_COOLDOWN_PERIOD_MINS"), 10, 64)
     if err != nil {
         // Default scaling cooldown.
-        scalingCooldownPeriodMins = 30
+        scalingCooldownPeriodMins = 0
         logMessage := "Error reading the SCALING_COOLDOWN_PERIOD_MINS environment variable. Default scaling timeout is 30 minutes."
         logger.WithError(err).Error(logMessage)
         errorHandler(err, logMessage, "", false)
@@ -292,7 +292,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	newShardCount, downThreshold = calculateNewShardCount(currentAlarmAction, downThreshold, currentShardCount)
 	logger = logger.WithField("CurrentShardCount", currentShardCount).WithField("TargetShardCount", newShardCount)
     if (newShardCount > maxShards) {
-        logger.Infof("Target shard count: %d is greater than max shards: %d. Will not scale the stream.", newShardCount, maxShards)
+            logger.Infof("Target shard count: %d is greater than max shards: %d. Will not scale the stream.", newShardCount, maxShards)
         return
     }
 	if dryRun {
