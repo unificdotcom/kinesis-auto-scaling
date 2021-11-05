@@ -408,7 +408,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
 
 	var metrics []*cloudwatch.MetricDataQuery
 
-	logger.Info("Getting alarm metrics for: " + alarmName)
+	logger.Debug("Getting alarm metrics for: " + alarmName)
 	metrics, err = getAlarmMetrics(alarmName)
 
 	if (err != nil) {
@@ -548,7 +548,7 @@ func updateAlarm(alarmName string, evaluationPeriod int64, datapointsRequired in
     	metrics = removeDuplicateValues(metrics)
     }
 
-    logger.Info(fmt.Sprintf("Metrics: %s", metrics))
+    logger.Debug(fmt.Sprintf("Metrics: %s", metrics))
 
 	for retryCount < throttleRetryCount {
 		putMetricAlarmResponse, err = svcCloudWatch.PutMetricAlarm(&cloudwatch.PutMetricAlarmInput{
