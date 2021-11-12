@@ -2295,7 +2295,7 @@ resources:
           - Id: e7
             ReturnData: False
             Label: TransformationServiceConsumerIteratorAgeAdjustedFactor
-            Expression: !Sub (FILL(m5,0)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
+            Expression: !Sub (FILL(m5,LINEAR)/1000/60)*(${self:custom.SCALE_UP_THRESHOLD}/s2) # We want to scale up when IterAge is > 30 mins
           - Id: e8
             ReturnData: True
             Label: MaxIncomingUsageFactor
