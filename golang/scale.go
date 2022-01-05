@@ -87,6 +87,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	var scaleDownMinIterAgeMins int64
 	var scaleUpMaxIterAgeMins int64
     var scalingCooldownPeriodMins int64
+    var minShards int64
     var maxShards int64
 	var dryRun = true
 	// Note: Investigate envconfig (https://github.com/kelseyhightower/envconfig) to simplify this environment variable section to have less boilerplate.
@@ -167,6 +168,14 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
         // Default scaling cooldown.
         scalingCooldownPeriodMins = 0
         logMessage := "Error reading the SCALING_COOLDOWN_PERIOD_MINS environment variable. Default scaling timeout is 30 minutes."
+        logger.WithError(err).Error(logMessage)
+        errorHandler(err, logMessage, "", false)
+    }
+    minShards, err = strconv.ParseInt(os.Getenv("MIN_SHARDS"), 10, 64)
+    if err != nil {
+        // Default min shards
+        minShards = 1
+        logMessage := "Error reading the MIN_SHARDS environment variable. Default min shards is 1."
         logger.WithError(err).Error(logMessage)
         errorHandler(err, logMessage, "", false)
     }
@@ -291,14 +300,22 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	currentShardCount = *((*streamSummary.StreamDescriptionSummary).OpenShardCount)
 	newShardCount, downThreshold = calculateNewShardCount(currentAlarmAction, downThreshold, currentShardCount)
 	logger = logger.WithField("CurrentShardCount", currentShardCount).WithField("TargetShardCount", newShardCount)
+
     if (newShardCount > maxShards) {
             logger.Infof("Target shard count: %d is greater than max shards: %d. Will not scale the stream.", newShardCount, maxShards)
         return
     }
+
+    if (newShardCount < minShards) {
+            logger.Infof("Target shard count: %d is less than min shards: %d. Will not scale the stream.", newShardCount, minShards)
+        return
+    }
+
 	if dryRun {
 		logger.Info("This is dry run. Will not scale the stream.")
 		return
 	}
+
 	logger.Info("Target shard count calculated. Now scaling the stream.")
 
 	// Update the stream with the new shard count.

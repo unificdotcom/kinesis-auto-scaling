@@ -25,6 +25,7 @@ custom:
   SCALE_DOWN_EVALUATION_PERIOD: 60
   SCALE_DOWN_DATAPOINTS_REQUIRED: 57
   SCALING_COOLDOWN_PERIOD_MINS: 15
+  MIN_SHARDS: 2
   MAX_SHARDS: 16
 
 package:
@@ -57,6 +58,7 @@ functions:
       SCALE_DOWN_DATAPOINTS_REQUIRED: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
       SCALE_DOWN_MIN_ITER_AGE_MINS: ${self:custom.SCALE_DOWN_MIN_ITER_AGE_MINS}
       SCALING_COOLDOWN_PERIOD_MINS: ${self:custom.SCALING_COOLDOWN_PERIOD_MINS}
+      MIN_SHARDS: ${self:custom.MIN_SHARDS}
       MAX_SHARDS: ${self:custom.MAX_SHARDS}
       PROCESSING_LAMBDA_ARN: "" # Empty = No Op, or if scaling a single stream, set this to the lambda consumer arn to automatically reserve concurrency as the stream scales
       PROCESSING_LAMBDAS_PER_SHARD: 5 # Lambdas per shard used by the above processing lambda
