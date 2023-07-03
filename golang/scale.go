@@ -306,7 +306,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
         return
     }
 
-    if (newShardCount < minShards) {
+    if (newShardCount < minShards && currentAlarmAction != "Up") {
             logger.Infof("Target shard count: %d is less than min shards: %d. Will not scale the stream.", newShardCount, minShards)
         return
     }
