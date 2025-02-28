@@ -256,16 +256,16 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	}
 
     // Call DescribeAlarms to get the current CloudWatch alarm
-    result, err := svcCloudWatch.DescribeAlarms(&cloudwatch.DescribeAlarmsInput{
-        AlarmNames: []*string{aws.String(currentAlarmName)},
-    })
-
-    if err != nil {
-        logMessage := "Log Cloudwatch DescribeAlarms API error"
-        logger.WithError(err).Error(logMessage)
-        errorHandler(err, logMessage, currentAlarmName, true)
-        return
-    }
+//     result, err := svcCloudWatch.DescribeAlarms(&cloudwatch.DescribeAlarmsInput{
+//         AlarmNames: []*string{aws.String(currentAlarmName)},
+//     })
+//
+//     if err != nil {
+//         logMessage := "Log Cloudwatch DescribeAlarms API error"
+//         logger.WithError(err).Error(logMessage)
+//         errorHandler(err, logMessage, currentAlarmName, true)
+//         return
+//     }
 
     // Reuse existing alarm actions if they exist
 //     if len(result.MetricAlarms) > 0 {
