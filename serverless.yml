@@ -156,7 +156,6 @@ resources:
     #
     # Auto Scaling SNS Topic
     #
-
     AutoScalingSNSTopic:
       Type: AWS::SNS::Topic
       DependsOn: KinesisAutoScalingLambdaFunction
@@ -388,7 +387,7 @@ resources:
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
         EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue TransformedCheckoutScaleUpPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -487,7 +486,7 @@ resources:
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
         EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue TransformedCheckoutScaleDownPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -589,7 +588,7 @@ resources:
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
         EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue TransformedOrderScaleUpPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -688,7 +687,7 @@ resources:
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
         EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue TransformedOrderScaleDownPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -1191,7 +1190,7 @@ resources:
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
         EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue EnrichedCheckoutScaleUpPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -1290,7 +1289,7 @@ resources:
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
         EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue EnrichedCheckoutScaleDownPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -1392,7 +1391,7 @@ resources:
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
         EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue EnrichedOrderScaleUpPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -1491,7 +1490,7 @@ resources:
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
         EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue EnrichedOrderScaleDownPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -2196,7 +2195,7 @@ resources:
         Threshold: ${self:custom.SCALE_UP_THRESHOLD}
         EvaluationPeriods: ${self:custom.SCALE_UP_EVALUATION_PERIOD} # 25 Minutes / kinesis_period_mins. Evaluate scale up for 25 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_UP_DATAPOINTS_REQUIRED} # 25 Minutes / kinesis_period_mins. 5 out of 5 datapoints required. Takes 25 minutes above threshold to scale up.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue InboundWebhooksScaleUpPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
@@ -2313,7 +2312,7 @@ resources:
         Threshold: -1 # Set to -1 for 1 shard stream, as we can't scale down from here. Gets updated by the auto scaling lambda later
         EvaluationPeriods: ${self:custom.SCALE_DOWN_EVALUATION_PERIOD} # 300 Minutes / kinesis_period_mins. Evaluate scale down for 300 minutes.
         DatapointsToAlarm: ${self:custom.SCALE_DOWN_DATAPOINTS_REQUIRED} # 285 Minutes / kinesis_period_mins. 57 out of 60 datapoints required. Takes 285 minutes below threshold to scale down.
-        AlarmActions: [ !Ref AutoScalingSNSTopic ]
+        AlarmActions: [ !Ref AutoScalingSNSTopic, !ImportValue InboundWebhooksScaleDownPolicyArn ]
         Metrics:
           - Id: s1
             ReturnData: False
