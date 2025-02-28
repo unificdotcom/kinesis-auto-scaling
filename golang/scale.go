@@ -232,7 +232,7 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
 	// Figure out whether the scale action is "Up" or "Down".
 	snsRecord := snsEvent.Records[0].SNS
 	message := snsRecord.Message
-	//alarmActions = append(alarmActions, &snsRecord.TopicArn)
+	alarmActions = append(alarmActions, &snsRecord.TopicArn)
 
 	err = json.Unmarshal([]byte(message), &alarmInformation)
 
@@ -268,12 +268,12 @@ func handleRequest(_ context.Context, snsEvent events.SNSEvent) {
     }
 
     // Reuse existing alarm actions if they exist
-    if len(result.MetricAlarms) > 0 {
-        alarmActions = result.MetricAlarms[0].AlarmActions
-    } else {}
-        logger.Info("Existing alarm actions are empty. Using default SNS topic ARN instead.")
-        alarmActions = append(alarmActions, &snsRecord.TopicArn)
-    }
+//     if len(result.MetricAlarms) > 0 {
+//         alarmActions = result.MetricAlarms[0].AlarmActions
+//     } else {}
+//         logger.Info("Existing alarm actions are empty. Using default SNS topic ARN instead.")
+//         alarmActions = append(alarmActions, &snsRecord.TopicArn)
+//     }
 
 	scaleUpAlarmName, scaleDownAlarmName, currentAlarmAction, lastScaledTimestamp = parseAlarmNameAndTags(*response, currentAlarmName)
 	logger = logger.WithField("ScaleAction", currentAlarmAction)

@@ -52,7 +52,6 @@ jobs:
        - deploy:
            command: ./deploy.sh prod
 
-
 workflows:
   version: 2
   my-workflow:
