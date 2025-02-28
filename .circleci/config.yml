@@ -7,13 +7,14 @@ defaults: &defaults
       environment:
         GO111MODULE: "off"
 
-version: 2
+version: 2.1
+
 jobs:
   build:
     <<: *defaults
     steps:
-      - checkout
       - setup_remote_docker
+      - checkout
       - run: cd golang && ./build
       - persist_to_workspace:
           root: .
@@ -50,6 +51,7 @@ jobs:
           at: .
        - deploy:
            command: ./deploy.sh prod
+
 
 workflows:
   version: 2
