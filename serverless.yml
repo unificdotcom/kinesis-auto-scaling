@@ -71,13 +71,18 @@ resources:
       Properties:
         RetentionInDays: 30
 
+    version:
+      Type: AWS::Lambda::Version
+      Properties:
+        FunctionName: !Ref KinesisAutoScaling
+
     AutoScalingLambdaAsyncConfig:
       Type: AWS::Lambda::EventInvokeConfig
       DependsOn: KinesisAutoScalingLambdaFunction
       Properties:
         FunctionName: ${self:custom.stage}-${self:service}
         MaximumRetryAttempts: 0  # We do not want any retries of the scaling function if it errors out, alarms will re-trigger it
-#        Qualifier: $LATEST
+        Qualifier: !GetAtt version.Version
 
     #
     # Auto Scaling Lambda IAM Role
