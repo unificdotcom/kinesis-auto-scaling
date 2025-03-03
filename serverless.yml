@@ -71,13 +71,13 @@ resources:
       Properties:
         RetentionInDays: 30
 
-    AutoScalingLambdaAsyncConfig:
-      Type: AWS::Lambda::EventInvokeConfig
-      DependsOn: KinesisAutoScaling
-      Properties:
-        FunctionName: ${self:custom.stage}-${self:service}
-        MaximumRetryAttempts: 0  # We do not want any retries of the scaling function if it errors out, alarms will re-trigger it
-        Qualifier: $LATEST
+#    AutoScalingLambdaAsyncConfig:
+#      Type: AWS::Lambda::EventInvokeConfig
+#      DependsOn: KinesisAutoScalingLambdaFunction
+#      Properties:
+#        FunctionName: ${self:custom.stage}-${self:service}
+#        MaximumRetryAttempts: 0  # We do not want any retries of the scaling function if it errors out, alarms will re-trigger it
+#        Qualifier: $LATEST
 
     #
     # Auto Scaling Lambda IAM Role
@@ -158,7 +158,7 @@ resources:
     #
     AutoScalingSNSTopic:
       Type: AWS::SNS::Topic
-      DependsOn: KinesisAutoScaling
+      DependsOn: KinesisAutoScalingLambdaFunction
       Properties:
         Subscription:
           - Endpoint: !Sub 'arn:aws:lambda:${self:provider.region}:${AWS::AccountId}:function:${self:custom.stage}-${self:service}'
