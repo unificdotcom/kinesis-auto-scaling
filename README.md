@@ -14,8 +14,6 @@ A lightweight system to automatically scale Kinesis Data Streams up and down bas
     - Scale Down events halve the number of shards in the stream
   - Updates the metric math on the `Scale Up` and `Scale Down` alarms to reflect the new shard count.
 
-
-
 # Features
 
 1. Designed for simplicity and a minimal service footprint. 
