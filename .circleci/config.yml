@@ -5,7 +5,7 @@ defaults: &defaults
   docker:
     - image: cimg/go:1.21
       environment:
-        GO111MODULE: "on"
+        GO111MODULE: "off"
 
 version: 2.1
 
